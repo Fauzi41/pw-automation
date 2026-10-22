@@ -1,0 +1,1644 @@
+{
+  "name": "PW Daily Facebook Post Automation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -176
+      ],
+      "id": "c6f5eaf0-2d90-4ff7-b6de-f3186704ceab",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 19
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -240,
+        48
+      ],
+      "id": "05004a86-5622-4bd8-8496-18f88c9ba21d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dcb03a31-0c86-4381-85a2-7450989102c2",
+              "name": "sitemap_url",
+              "value": "={{ ({article:'https://www.placidway.com/1/sitemap_articles.xml', answer:'https://www.placidway.com/sitemap/1/sitemap_answers.xml', news:'https://www.placidway.com/1/sitemap_news.xml'})[['article','answer','article','article','answer','news','article'][$now.weekday - 1]] }}",
+              "type": "string"
+            },
+            {
+              "id": "3c858ab7-8d6f-4151-8851-bff04d94e3d1",
+              "name": "content_type",
+              "value": "={{ ['article','answer','article','article','answer','news','article'][$now.weekday - 1] }}",
+              "type": "string"
+            },
+            {
+              "id": "9c0e3029-bd69-42e0-a328-93c83e56a472",
+              "name": "dry_run",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "52e2aafb-9207-4eca-96c5-38d9713a1530",
+              "name": "user_agent",
+              "value": "PWAssessmentBot/1.0",
+              "type": "string"
+            },
+            {
+              "id": "88a7b61b-c62a-40d6-b8d9-aac2dc93041c",
+              "name": "candidates",
+              "value": 100,
+              "type": "number"
+            },
+            {
+              "id": "afe7fcdc-c587-413d-997b-7c8f6fbe9bf5",
+              "name": "max_chars",
+              "value": 500,
+              "type": "number"
+            },
+            {
+              "id": "8d61aa4a-a05a-4dab-9217-9e118609122f",
+              "name": "approval_mode",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "3d54a094-992c-4b50-867d-d9a057507917",
+              "name": "max_attempts",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "6f5c815d-d28f-4047-ab0b-57d17a658797",
+              "name": "test_force_violation",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "c9bc41fe-a336-4682-aa60-0d1c2f44d7d9",
+              "name": "facebook_page_id",
+              "value": "1308714809002275",
+              "type": "string"
+            },
+            {
+              "id": "8f86d827-ba8b-486d-aea2-5c1b26cc07c7",
+              "name": "fb_api_version",
+              "value": "v26.0",
+              "type": "string"
+            },
+            {
+              "id": "dbd8b28a-3149-48a7-bf01-0c03a3165706",
+              "name": "schedule_minutes",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "f15fad3a-2972-4c20-b09f-4de4b78bd17c",
+              "name": "reviewer_email",
+              "value": "reviewer@example.com",
+              "type": "string"
+            },
+            {
+              "id": "e1c27472-779b-42c9-91c5-2a0fc90d5856",
+              "name": "alert_email",
+              "value": "reviewer@example.com",
+              "type": "string"
+            },
+            {
+              "id": "c764b78c-9002-49b5-8c73-afe96f82120c",
+              "name": "pick_index",
+              "value": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "1cdac8de-b712-48a8-86fd-cc2910f6cff0",
+      "name": "Config"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.sitemap_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "={{ $json.user_agent }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        -80
+      ],
+      "id": "df0a0c7c-9407-45a3-b49f-1e13aa2fcc38",
+      "name": "Fetch sitemap",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "qd56sL6e0lGAdlco",
+          "mode": "list",
+          "cachedResultName": "run_log",
+          "cachedResultUrl": "/projects/fhxBMd8VZaayq2V4/datatables/qd56sL6e0lGAdlco"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        -80
+      ],
+      "id": "32ac86ce-d37f-4ee2-9c8d-5d97b483009e",
+      "name": "Get log rows",
+      "executeOnce": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "={{ $('Config').first().json.user_agent }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1120,
+        -80
+      ],
+      "id": "be3ac793-e162-4af1-9936-d23371da6864",
+      "name": "Fetch page",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\n\nconst taken = new Set(\n  $('Get log rows').all()\n    .map(i => i.json)\n    .filter(r => r.url && ['posted', 'pending', 'scheduled'].includes(r.status))\n    .map(r => r.url)\n);\n\nconst fresh = $('Parse sitemap').all().filter(i => !taken.has(i.json.url));\n\nif (!fresh.length) {\n  throw new Error('No unposted items left among the newest ' + cfg.candidates + ' sitemap entries');\n}\n\nreturn [{ json: { ...fresh[Math.min(cfg.pick_index, fresh.length - 1)].json, run_id: 'run-' + Date.now() } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -80
+      ],
+      "id": "8bea8eaf-9032-4b6e-a1c8-425a4df14123",
+      "name": "Select item"
+    },
+    {
+      "parameters": {
+        "jsCode": "const xml = $input.first().json.data;\nconst cfg = $('Config').first().json;\n\nconst blocks = xml.match(/<url>[\\s\\S]*?<\\/url>/g) || [];\nconst items = blocks.map(b => ({\n  url: ((b.match(/<loc>\\s*([^<]+?)\\s*<\\/loc>/) || [])[1] || '').replace(/&amp;/g, '&'),\n  lastmod: (b.match(/<lastmod>\\s*([^<]+?)\\s*<\\/lastmod>/) || [])[1] || '',\n  content_type: cfg.content_type\n})).filter(i => i.url);\n\nif (!items.length) {\n  throw new Error('Sitemap returned no URLs - site down or format changed');\n}\n\nitems.sort((a, b) => b.lastmod.localeCompare(a.lastmod));\n\nreturn items.slice(0, cfg.candidates).map(i => ({ json: i }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -80
+      ],
+      "id": "af3e9351-6674-4bf5-9f9d-78bbd389c489",
+      "name": "Parse sitemap"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data;\nconst item = $('Select item').first().json;\n\nconst decode = s => (s || '')\n  .replace(/&quot;/g, '\"').replace(/&#0?39;/g, \"'\").replace(/&amp;/g, '&')\n  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ')\n  .replace(/&yen;/g, '¥').replace(/&ndash;/g, '–').replace(/&mdash;/g, '—')\n.replace(/&[lr]squo;/g, \"'\").replace(/&[lr]dquo;/g, '\"').replace(/&#(\\d+);/g, (m, n) => String.fromCharCode(+n));\n\nconst meta = (prop) => {\n  const a = new RegExp('<meta[^>]*?(?:property|name)=([\"\\'])' + prop + '\\\\1[^>]*?content=([\"\\'])([\\\\s\\\\S]*?)\\\\2', 'i');\n  const b = new RegExp('<meta[^>]*?content=([\"\\'])([\\\\s\\\\S]*?)\\\\1[^>]*?(?:property|name)=([\"\\'])' + prop + '\\\\3', 'i');\n  let m = html.match(a);\n  if (m) return decode(m[3]).trim();\n  m = html.match(b);\n  return m ? decode(m[2]).trim() : '';\n};\n\nconst stripped = html\n  .replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')\n  .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')\n  .replace(/<(nav|header|footer|aside)[\\s\\S]*?<\\/\\1>/gi, ' ');\n\nconst paras = (stripped.match(/<(p|li|h2|h3)[^>]*>[\\s\\S]*?<\\/\\1>/gi) || [])\n  .map(p => decode(p.replace(/<[^>]+>/g, ' ')).replace(/\\s+/g, ' ').trim())\n  .filter(t => t.length > 40);\n\nconst body = paras.join('\\n').slice(0, 4000);\n\nconst out = {\n  ...item,\n  title: meta('og:title') || decode((html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i) || [])[1] || '').trim(),\n  summary: meta('og:description') || meta('description'),\n  image_url: meta('og:image'),\n  body,\n  body_chars: body.length\n};\n\nif (!out.title || (!out.summary && out.body_chars < 200)) {\n  throw new Error('Could not extract usable content from ' + item.url);\n}\n\nreturn [{ json: out }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -80
+      ],
+      "id": "44e353dc-ef83-401e-980c-36aa14748ec5",
+      "name": "Extract fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=SOURCE PAGE\nTitle: {{ $json.title }}\nSummary: {{ $json.summary }}\nPage text: {{ $json.body }}\n\n{{ $json.feedback ? 'FIX THESE PROBLEMS FROM THE PREVIOUS ATTEMPT: ' + $json.feedback : '' }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You write Facebook posts for PlacidWay, a medical tourism marketplace. Write ONE post based ONLY on the SOURCE PAGE provided by the user.  STRICT RULES - Use only facts that appear in the source. Never add facts, statistics, percentages, prices, clinic names, doctor names, or results that are not in the source. - No medical claims. Do not say a treatment cures, reverses, heals, prevents, treats, works better, or is safe, and do not promise or imply outcomes. Describe what the page covers or compares (\"explains\", \"compares\", \"walks through\") instead of what a treatment achieves. - Never state prices, costs, or savings. If the page is about cost, invite readers to read the page for details. - Do not use superlatives or comparisons like \"best\", \"top\", \"leading\", \"guaranteed\", \"100%\". - Tone: clear, calm, informative, reader-friendly. No hype, no all-caps, no clickbait, at most one emoji. - Write in English.  STRUCTURE - hook: one short question or statement, max 100 characters. - lines: 2 to 4 short value lines, each max 110 characters. Each states something the page actually covers. - cta: one call to action inviting the reader to read the page, max 80 characters. Do not include the URL (it is added separately). - hashtags: 3 to 5 CamelCase hashtags relevant to the topic, starting with #. - hook + lines + cta + hashtags together must be under 480 characters.  OUTPUT Return ONLY valid JSON, with no markdown fences and no commentary, exactly in this shape: {\"hook\": \"...\", \"lines\": [\"...\", \"...\"], \"cta\": \"...\", \"hashtags\": [\"#Example1\", \"#Example2\", \"#Example3\"]}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1568,
+        -80
+      ],
+      "id": "eb8cbc96-8e52-4af9-be87-bdb3b717c823",
+      "name": "Generate post",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $('Extract fields').first().json;\nconst input = $input.first().json;\nconst raw = input.text ?? (input.response && input.response.text) ?? '';\n\nlet data;\ntry {\n  const cleaned = String(raw).replace(/```json|```/gi, '').trim();\n  const start = cleaned.indexOf('{');\n  const end = cleaned.lastIndexOf('}');\n  data = JSON.parse(cleaned.slice(start, end + 1));\n} catch (e) {\n  throw new Error('LLM did not return valid JSON: ' + String(raw).slice(0, 200));\n}\n\nconst hook = String(data.hook || '').trim();\nconst lines = (Array.isArray(data.lines) ? data.lines : []).map(s => String(s).trim()).filter(Boolean);\nconst cta = String(data.cta || '').trim();\nconst hashtags = (Array.isArray(data.hashtags) ? data.hashtags : [])\n  .map(h => String(h).trim().replace(/\\s+/g, ''))\n  .filter(Boolean)\n  .map(h => (h.startsWith('#') ? h : '#' + h));\n\nconst before_link = [hook, lines.join('\\n'), cta].filter(Boolean).join('\\n\\n');\nconst hashtag_line = hashtags.join(' ');\nconst post_text = before_link + '\\n\\n' + item.url + '\\n\\n' + hashtag_line;\n\nreturn [{\n  json: {\n    ...item,\n    hook, lines, cta, hashtags,\n    post_text,\n    chars_before_link: before_link.length,\n    chars_total_no_url: before_link.length + hashtag_line.length,\n    attempt: $runIndex + 1\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1936,
+        -80
+      ],
+      "id": "56d853e9-1eaa-4c5b-b8bf-78272edf197a",
+      "name": "Build post"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nconst item = $input.first().json;\nconst source = [item.title, item.summary, item.body].join(' ');\n\nlet post_text = item.post_text;\n// Demo switch: injects a bad sentence on the first attempt only\nif (cfg.test_force_violation && item.attempt === 1) {\n  post_text = post_text.replace(\n    item.url,\n    'This treatment is guaranteed to cure knee pain and costs only $350. ' + item.url\n  );\n}\n\n// Scan everything except the URL (its slug contains words like \"Works-Better\")\nconst scan = post_text.split(item.url).join(' ');\nconst violations = [];\n\n// Format rules\nif (item.chars_before_link > cfg.max_chars) violations.push(`Text before the link is ${item.chars_before_link} characters; the limit is ${cfg.max_chars}.`);\nif (!item.hook) violations.push('Missing hook.');\nif (item.lines.length < 2 || item.lines.length > 4) violations.push(`Needs 2-4 value lines, got ${item.lines.length}.`);\nif (!item.cta) violations.push('Missing call to action.');\nif (item.hashtags.length < 3 || item.hashtags.length > 5) violations.push(`Needs 3-5 hashtags, got ${item.hashtags.length}.`);\nif (post_text.split(item.url).length !== 2) violations.push('The source URL must appear exactly once.');\n\n// Content rules\nconst banned = [\n  [/\\b(cure[sd]?|curing)\\b/i, 'medical claim'],\n  [/\\b(heal(s|ed|ing)?|revers(e|es|ed|ing)|restor(e|es|ed|ing)|eliminat(e|es|ed|ing))\\b/i, 'medical outcome claim'],\n  [/\\b(guarantee[sd]?|risk-free|painless|pain-free|miracle|breakthrough|proven|life-changing)\\b/i, 'promise or hype'],\n  [/\\b(best|top|leading|superior|safest|number one)\\b|#1\\b/i, 'superlative'],\n  [/\\b(safe|safely)\\b/i, 'safety claim'],\n  [/\\b(works? better|more effective|effective(ness)?|success rate)\\b/i, 'efficacy claim'],\n  [/\\b(will|can) (improve|help|relieve|reduce|restore|fix)\\b/i, 'outcome promise'],\n  [/[$€£¥]|\\b(USD|EUR|JPY|IDR|dollars?|yen|euros?|rupiah)\\b|%|\\b(cheap(er)?|affordable|discount(ed)?|savings?|save|low-cost)\\b/i, 'price, discount or savings language']\n];\nfor (const [re, why] of banned) {\n  const m = scan.match(re);\n  if (m) violations.push(`Contains \"${m[0]}\" (${why}).`);\n}\n\n// Every number in the post must exist in the source\nconst norm = s => s.replace(/,/g, '');\nconst srcNorm = norm(source);\nfor (const n of new Set(norm(scan).match(/\\d+(\\.\\d+)?/g) || [])) {\n  if (!srcNorm.includes(n)) violations.push(`Number \"${n}\" does not appear in the source.`);\n}\n\nreturn [{ json: { ...item, post_text, rules_passed: violations.length === 0, rule_violations: violations } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        -80
+      ],
+      "id": "c998fd0f-347c-4d11-a3c7-44c31c267d10",
+      "name": "Rule check"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=SOURCE PAGE\nTitle: {{ $json.title }}\nSummary: {{ $json.summary }}\nPage text: {{ $json.body }}\n\nPOST TO CHECK\n{{ $json.post_text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a strict compliance reviewer for a medical tourism marketplace's social media. Decide whether the POST is safe to publish, judging it ONLY against the SOURCE PAGE.  The post FAILS if any of these is true: 1. It states a fact, number, name, place or claim that is not supported by the source page. 2. It makes or implies a medical claim: that a treatment cures, heals, reverses, prevents, works, works better, or is safe or effective, even if the source page itself says so. 3. It promises or implies an outcome, result or recovery for the reader. 4. It states or implies a price, cost figure, discount or savings. 5. It uses superlatives or hype (\"best\", \"top\", \"guaranteed\", \"leading\").  Saying that the page \"covers\", \"compares\" or \"explains\" a topic, including cost or results, is allowed.  Return ONLY valid JSON with no markdown and no commentary: {\"pass\": true or false, \"violations\": [\"short description quoting the offending phrase\"]} Use an empty list when pass is true."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2384,
+        -80
+      ],
+      "id": "ff2e1758-565f-4aba-9e5d-60f95947ce50",
+      "name": "Verify post",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        2320,
+        128
+      ],
+      "id": "7004056c-4c64-490f-93a4-3c11937aeaca",
+      "name": "LLM review post",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "P3DxnvPCrA7VvpuD",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1504,
+        128
+      ],
+      "id": "3038f88b-f0ca-4511-b68f-dc145ee02c08",
+      "name": "LLM generate post",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "P3DxnvPCrA7VvpuD",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nconst r = $('Rule check').first().json;\nconst input = $input.first().json;\nconst raw = input.text ?? (input.response && input.response.text) ?? '';\n\nlet verdict;\ntry {\n  const cleaned = String(raw).replace(/```json|```/gi, '').trim();\n  verdict = JSON.parse(cleaned.slice(cleaned.indexOf('{'), cleaned.lastIndexOf('}') + 1));\n} catch (e) {\n  verdict = { pass: false, violations: ['Verifier returned unreadable output'] };\n}\n\nconst llmPass = verdict.pass === true;\nconst llmViolations = llmPass ? [] :\n  (Array.isArray(verdict.violations) && verdict.violations.length ? verdict.violations : ['Verifier rejected the post'])\n    .map(v => 'LLM check: ' + v);\n\nconst violations = [...r.rule_violations, ...llmViolations];\nconst passed = r.rules_passed && llmPass;\nconst route = passed ? 'pass' : (r.attempt < cfg.max_attempts ? 'retry' : 'blocked');\n\nreturn [{ json: { ...r, llm_pass: llmPass, guardrail_passed: passed, violations, feedback: violations.join(' | '), route } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2752,
+        -80
+      ],
+      "id": "37b4e615-a820-4457-afec-0c9220b6cbab",
+      "name": "Decide"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "pass",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "398da8d2-3351-4740-99e1-0d8825972fef"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pass"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "30d129b2-9f49-4389-8154-944b0c02cac7",
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "retry",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "retry"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7f6979d5-8a4f-40d9-9072-f8a5edd957b5",
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "blocked",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "blocked"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        2976,
+        -96
+      ],
+      "id": "beb0fdb7-e78f-4986-9ef7-e4d88c1cc138",
+      "name": "Route"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nreturn [{ json: {\n  run_id: d.run_id,\n  url: d.url,\n  content_type: d.content_type,\n  title: d.title,\n  post_text: d.post_text,\n  image_url: d.image_url || ''\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3248,
+        -112
+      ],
+      "id": "faa70ea3-3dbd-41f1-a330-abf701304c1d",
+      "name": "Final post"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "qd56sL6e0lGAdlco",
+          "mode": "list",
+          "cachedResultName": "run_log",
+          "cachedResultUrl": "/projects/fhxBMd8VZaayq2V4/datatables/qd56sL6e0lGAdlco"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.run_id }}",
+            "url": "={{ $json.url }}",
+            "content_type": "={{ $json.content_type }}",
+            "title": "={{ $json.title }}",
+            "post_text": "={{ $json.post_text }}",
+            "image_url": "={{ $json.image_url }}",
+            "fb_post_id": "=",
+            "status": "pending",
+            "mode": "={{ $('Config').first().json.approval_mode ? 'approval' : 'auto' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "content_type",
+              "displayName": "content_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "post_text",
+              "displayName": "post_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "image_url",
+              "displayName": "image_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fb_post_id",
+              "displayName": "fb_post_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3472,
+        -112
+      ],
+      "id": "c1bf886b-9df8-40f1-9507-0d6dfcda145d",
+      "name": "Log start"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b265b4eb-477b-49ea-917d-432540543c7e",
+              "leftValue": "={{ $('Config').first().json.approval_mode }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3696,
+        -112
+      ],
+      "id": "b4b16539-b885-4276-8891-1a1b4c6ee5f5",
+      "name": "Approval needed?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7a7127a6-6769-408a-981c-c680706eebe0",
+              "leftValue": "={{ $('Config').first().json.dry_run }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3920,
+        -16
+      ],
+      "id": "6867d6ea-b952-4916-b3c9-78ffdcacf40d",
+      "name": "Dry run?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $('Final post').first().json;\nreturn [{ json: {\n  run_id: p.run_id,\n  status: 'simulated',\n  fb_post_id: 'SIMULATED-' + Date.now(),\n  error: ''\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4144,
+        -112
+      ],
+      "id": "9d0df451-e67e-4059-8624-479dc625f803",
+      "name": "Simulate publish"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "qd56sL6e0lGAdlco",
+          "mode": "list",
+          "cachedResultName": "run_log",
+          "cachedResultUrl": "/projects/fhxBMd8VZaayq2V4/datatables/qd56sL6e0lGAdlco"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "run_id",
+              "keyValue": "={{ $json.run_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "={{ $json.status }}",
+            "fb_post_id": "={{ $json.fb_post_id }}",
+            "error": "={{ $json.error }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "content_type",
+              "displayName": "content_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "post_text",
+              "displayName": "post_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "image_url",
+              "displayName": "image_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fb_post_id",
+              "displayName": "fb_post_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        4832,
+        -112
+      ],
+      "id": "b18efe72-e157-4f37-8c90-1c7c30c7d840",
+      "name": "Update log"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nconst p = $('Final post').first().json;\nconst mins = Number(cfg.schedule_minutes || 0);\nconst useImage = !!p.image_url && mins === 0;\n\nconst body = useImage\n  ? { url: p.image_url, caption: p.post_text }\n  : { message: p.post_text };\n\nif (mins > 0) {\n  body.published = false;\n  body.scheduled_publish_time = Math.floor(Date.now() / 1000) + Math.max(mins, 11) * 60;\n}\n\nreturn [{ json: { run_id: p.run_id, endpoint: useImage ? 'photos' : 'feed', body } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4144,
+        80
+      ],
+      "id": "f1b5c75e-a224-46f8-a590-aabe9381b0d9",
+      "name": "Plan publish"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Config').first().json.fb_api_version }}/{{ $('Config').first().json.facebook_page_id }}/{{ $json.endpoint }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        4368,
+        80
+      ],
+      "id": "6c5cd9aa-cd6f-4ffd-addd-c70a5ce83cef",
+      "name": "Post to Facebook",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "WESjsF4aaY9rPP5W",
+          "name": "FB Page Token"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst p = $('Plan publish').first().json;\nreturn [{ json: {\n  run_id: p.run_id,\n  status: p.body.published === false ? 'scheduled' : 'posted',\n  fb_post_id: j.post_id || j.id || '',\n  error: ''\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4592,
+        -16
+      ],
+      "id": "937967b6-1502-4a39-ab61-8636d61cce6c",
+      "name": "Publish OK"
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst p = $('Plan publish').first().json;\nconst msg = JSON.stringify(j.error || j).slice(0, 500);\nconst tokenBad = /\"code\":\\s*190|OAuthException|access token/i.test(msg);\nreturn [{ json: {\n  run_id: p.run_id,\n  status: 'failed',\n  fb_post_id: '',\n  error: (tokenBad ? 'FACEBOOK TOKEN EXPIRED OR INVALID - refresh the Page token. ' : '') + msg\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4592,
+        176
+      ],
+      "id": "e763e5fe-055c-4a04-aca0-76a3adfd27ae",
+      "name": "Publish failed"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "fromEmail": "anasfauzi.ozi@gmail.com",
+        "toEmail": "={{ $('Config').first().json.reviewer_email }}",
+        "subject": "=Approve Facebook post? {{ $('Final post').first().json.title }}",
+        "message": "={{ $('Final post').first().json.post_text }}\n\nImage: {{ $('Final post').first().json.image_url }}\nRun: {{ $('Final post').first().json.run_id }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 24
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        3936,
+        -304
+      ],
+      "id": "457a4e35-d2f4-4725-8c3a-715a78c501fa",
+      "name": "Request approval",
+      "webhookId": "dcd01228-6495-4c93-b2eb-3f60ad9a0559",
+      "credentials": {
+        "smtp": {
+          "id": "6MP3c8WRfIh6UZq7",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst p = $('Final post').first().json;\nconst flag = (j.data && j.data.approved !== undefined) ? j.data.approved : j.approved;\nconst approved = flag === true || flag === 'true';\nconst rejected = flag === false || flag === 'false';\nreturn [{ json: {\n  run_id: p.run_id,\n  approved,\n  status: approved ? 'approved' : (rejected ? 'rejected' : 'expired'),\n  fb_post_id: '',\n  error: approved ? '' : (rejected ? 'Rejected by reviewer' : 'No response within the approval window')\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4144,
+        -304
+      ],
+      "id": "242324c6-f757-4b59-8c62-8381bbbc18ef",
+      "name": "Approval result"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1716a375-e862-4258-b3bf-b6528518e4a5",
+              "leftValue": "={{ $json.approved }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4368,
+        -304
+      ],
+      "id": "fb89d2a4-856b-48f2-a96e-8e66ba75f90b",
+      "name": "Approved?"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "qd56sL6e0lGAdlco",
+          "mode": "list",
+          "cachedResultName": "run_log",
+          "cachedResultUrl": "/projects/fhxBMd8VZaayq2V4/datatables/qd56sL6e0lGAdlco"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.run_id }}",
+            "url": "={{ $json.url }}",
+            "content_type": "={{ $json.content_type }}",
+            "title": "={{ $json.title }}",
+            "post_text": "={{ $json.post_text }}",
+            "image_url": "={{ $json.image_url }}",
+            "mode": "={{ $('Config').first().json.approval_mode ? 'approval' : 'auto' }}",
+            "status": "blocked"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "content_type",
+              "displayName": "content_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "post_text",
+              "displayName": "post_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "image_url",
+              "displayName": "image_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fb_post_id",
+              "displayName": "fb_post_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3248,
+        80
+      ],
+      "id": "fef94542-feba-44cc-a7d1-7f832d1f1bcb",
+      "name": "Log blocked"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b9d35107-7433-46d0-bce5-0057fc776a4f",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "failed",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "d7b91a55-a4be-4f52-bee2-d473352dc303",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "expired",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5024,
+        -112
+      ],
+      "id": "56768aa0-9b00-4ef2-b727-f5e1a60215bb",
+      "name": "Needs alert?"
+    },
+    {
+      "parameters": {
+        "fromEmail": "anasfauzi.ozi@gmail.com",
+        "toEmail": "={{ $('Config').first().json.alert_email }}",
+        "subject": "=PlacidWay automation: {{ $json.status }} ({{ $json.run_id }})",
+        "emailFormat": "text",
+        "text": "=Status: {{ $json.status }}\nRun: {{ $json.run_id }}\nPage: {{ $json.url }}\nDetails: {{ $json.error }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        5248,
+        -256
+      ],
+      "id": "03285f7b-b0a6-4e4d-9fde-80039088c606",
+      "name": "Send alert",
+      "webhookId": "320fc231-a6d8-46b5-b5f6-50e6c68b0771",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "smtp": {
+          "id": "6MP3c8WRfIh6UZq7",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Fetch sitemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch sitemap": {
+      "main": [
+        [
+          {
+            "node": "Parse sitemap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get log rows": {
+      "main": [
+        [
+          {
+            "node": "Select item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select item": {
+      "main": [
+        [
+          {
+            "node": "Fetch page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse sitemap": {
+      "main": [
+        [
+          {
+            "node": "Get log rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch page": {
+      "main": [
+        [
+          {
+            "node": "Extract fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract fields": {
+      "main": [
+        [
+          {
+            "node": "Generate post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate post": {
+      "main": [
+        [
+          {
+            "node": "Build post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build post": {
+      "main": [
+        [
+          {
+            "node": "Rule check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rule check": {
+      "main": [
+        [
+          {
+            "node": "Verify post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM review post": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Verify post",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM generate post": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate post",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify post": {
+      "main": [
+        [
+          {
+            "node": "Decide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide": {
+      "main": [
+        [
+          {
+            "node": "Route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route": {
+      "main": [
+        [
+          {
+            "node": "Final post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log blocked",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final post": {
+      "main": [
+        [
+          {
+            "node": "Log start",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log start": {
+      "main": [
+        [
+          {
+            "node": "Approval needed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval needed?": {
+      "main": [
+        [
+          {
+            "node": "Request approval",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dry run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dry run?": {
+      "main": [
+        [
+          {
+            "node": "Simulate publish",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Plan publish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simulate publish": {
+      "main": [
+        [
+          {
+            "node": "Update log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plan publish": {
+      "main": [
+        [
+          {
+            "node": "Post to Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Facebook": {
+      "main": [
+        [
+          {
+            "node": "Publish OK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publish failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish OK": {
+      "main": [
+        [
+          {
+            "node": "Update log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish failed": {
+      "main": [
+        [
+          {
+            "node": "Update log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Request approval": {
+      "main": [
+        [
+          {
+            "node": "Approval result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval result": {
+      "main": [
+        [
+          {
+            "node": "Approved?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved?": {
+      "main": [
+        [
+          {
+            "node": "Dry run?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update log": {
+      "main": [
+        [
+          {
+            "node": "Needs alert?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs alert?": {
+      "main": [
+        [
+          {
+            "node": "Send alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log blocked": {
+      "main": [
+        [
+          {
+            "node": "Send alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Jakarta",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "PL51CcRtj8SzerdK"
+  },
+  "versionId": "194d616e-2628-4c15-bdaa-773c3340aed5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f70a08e5091240a1cb000ff25fd2493dc607fe4e30ea27bc85dbb1c28e9977c9"
+  },
+  "nodeGroups": [],
+  "id": "tl8tgcpKMSxJ0ehb",
+  "tags": []
+}

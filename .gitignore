@@ -1,0 +1,17 @@
+# Secrets and local files - never commit these
+.env
+*.env
+*.pem
+*.key
+credentials*.json
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Large media (host the recording on YouTube or Drive instead)
+*.mp4
+*.mov
+*.mkv

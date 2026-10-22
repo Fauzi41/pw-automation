@@ -1,0 +1,213 @@
+{
+  "name": "PW Error Alert",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -48
+      ],
+      "id": "91085bd0-cfdb-44a1-b33b-65a23296d230",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "qd56sL6e0lGAdlco",
+          "mode": "list",
+          "cachedResultName": "run_log",
+          "cachedResultUrl": "/projects/fhxBMd8VZaayq2V4/datatables/qd56sL6e0lGAdlco"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "=err-{{ $json.execution.id }}",
+            "status": "failed",
+            "mode": "error",
+            "error": "={{ $json.execution.error.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "content_type",
+              "displayName": "content_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "post_text",
+              "displayName": "post_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "image_url",
+              "displayName": "image_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fb_post_id",
+              "displayName": "fb_post_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        -48
+      ],
+      "id": "28b4f73f-7f4d-4042-aa42-ee97021b9bf1",
+      "name": "Log error"
+    },
+    {
+      "parameters": {
+        "fromEmail": "anasfauzi.ozi@gmail.com",
+        "toEmail": "reviewer@example.com",
+        "subject": "=FAILED: {{ $('Error Trigger').first().json.workflow.name }}",
+        "emailFormat": "text",
+        "text": "=Workflow: {{ $('Error Trigger').first().json.workflow.name }}\nFailed node: {{ $('Error Trigger').first().json.execution.lastNodeExecuted }}\nError: {{ $('Error Trigger').first().json.execution.error.message }}\nExecution: {{ $('Error Trigger').first().json.execution.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        176,
+        -48
+      ],
+      "id": "a8df98e5-93db-423f-8029-9de66b593a99",
+      "name": "Send error alert",
+      "webhookId": "d0d663f3-7f88-4fa3-a948-821858b7b8f0",
+      "credentials": {
+        "smtp": {
+          "id": "6MP3c8WRfIh6UZq7",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Log error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log error": {
+      "main": [
+        [
+          {
+            "node": "Send error alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8ee77876-4884-47b0-9259-0ea35c132cec",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f70a08e5091240a1cb000ff25fd2493dc607fe4e30ea27bc85dbb1c28e9977c9"
+  },
+  "nodeGroups": [],
+  "id": "PL51CcRtj8SzerdK",
+  "tags": []
+}

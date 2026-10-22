@@ -1,0 +1,23 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Asia/Jakarta
+      - TZ=Asia/Jakarta
+      # For approval links that work from other devices, set your public HTTPS address
+      # and make sure that address reaches this container (tunnel or reverse proxy).
+      # - WEBHOOK_URL=https://your-domain.example/
+      # - N8N_HOST=your-domain.example
+      # - N8N_PORT=5678
+      # - N8N_PROTOCOL=https
+      # - N8N_EDITOR_BASE_URL=https://your-domain.example/
+      # - N8N_PROXY_HOPS=1
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:
