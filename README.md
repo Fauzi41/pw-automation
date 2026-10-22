@@ -1,6 +1,6 @@
 # PlacidWay Daily Facebook Post Automation (n8n)
 
-**Demo recording:** `https://drive.google.com/file/d/1llokBUNMnWyxRSCho7bGpyn_bLDdDS7W/view?usp=sharing`
+**Demo recording:** https://drive.google.com/file/d/1llokBUNMnWyxRSCho7bGpyn_bLDdDS7W/view?usp=sharing
 **Workflow files:** [`workflow/placidway-daily-fb-post.json`](workflow/placidway-daily-fb-post.json), [`workflow/placidway-error-alert.json`](workflow/placidway-error-alert.json)
 **Sample outputs:** [`samples/sample-posts.md`](samples/sample-posts.md)
 
