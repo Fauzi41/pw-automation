@@ -1,7 +1,7 @@
 # PlacidWay Daily Facebook Post Automation (n8n)
 
-**Demo recording:** https://drive.google.com/file/d/1llokBUNMnWyxRSCho7bGpyn_bLDdDS7W/view?usp=sharing
-**Workflow files:** [`workflow/placidway-daily-fb-post.json`](workflow/placidway-daily-fb-post.json), [`workflow/placidway-error-alert.json`](workflow/placidway-error-alert.json)
+**Demo recording:** https://drive.google.com/file/d/1llokBUNMnWyxRSCho7bGpyn_bLDdDS7W/view?usp=sharing <br>
+**Workflow files:** [`workflow/placidway-daily-fb-post.json`](workflow/placidway-daily-fb-post.json), [`workflow/placidway-error-alert.json`](workflow/placidway-error-alert.json)<br>
 **Sample outputs:** [`samples/sample-posts.md`](samples/sample-posts.md)
 
 An n8n workflow that turns public PlacidWay pages into one on-brand Facebook post per day. It extracts a fresh page, never repeats a URL, writes the post with an LLM, checks it with two guardrail layers, and then publishes it to a test Page or sends it to a human for approval first. Every run is logged, and failures send an alert instead of failing silently.
@@ -349,7 +349,6 @@ I used an AI assistant to draft node configuration, code and documentation. I te
 ├── docker-compose.yml
 ├── .gitignore
 ├── workflow/
-│   ├── README.md                       (how to export and import)
 │   ├── placidway-daily-fb-post.json
 │   └── placidway-error-alert.json
 ├── code/                               (every Code node, one file per node)
